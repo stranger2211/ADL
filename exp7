@@ -1,0 +1,77 @@
+on terminal
+1)
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+    https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+    
+2)
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+    https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+    
+3)
+sudo apt-get update
+  sudo apt-get install fontconfig openjdk-17-jre
+  sudo apt-get install jenkins
+
+4)
+sudo systemctl status jenkins
+and then go to localhost:8080
+
+5)for password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+6)
+sudo ufw allow 8080
+
+7) sudo apt install docker.io
+docker -v
+
+8)sudo docker run -d -p 9000:9000 sonarqube
+sudo docker ps
+sudo docker run -d -p 9000:9000 sonarqube
+sudo systemctl status docker
+sudo systemctl status docker
+sudo systemctl status docker
+
+
+9)on website
+
+open jenkins using password
+then click on suggested	plugins
+create admin user
+
+10) open sonarqube on port 9000
+login using username and password as admin,admin
+click on profile > myaccount >security >generate token>token type =user token
+and save the generated token
+
+11) go to jenkins
+manage jenkins>plugin manager>available search for sonar qube scanner and install it
+manage jenkins> system > sonarqube server > below sonarqube installations > below server authentication token
+click add > jenkins
+changes (kind=secret text)
+	(secret=hello)
+	(id=SonarQube)
+	(desc=SonarQube)
+	save it
+	
+12)
+manage jenkins > tools >sonarqube installations
+changes (name=SonarQube)
+save it
+
+13) dashboard>newitem >pipeline>
+check github project and add this link https://github.com/vishal003/jenkins-sonarqube.git/
+save it
+
+in script write these code
+
+node 
+{
+	stage('cloning into GIT'){
+		git branch: 'main', credentialsId: 'GIT_REPO', url: 'https://github.com/vishal003/jenkins-sonarqube.git/'
+	}
+}
+
+save it
+
+and then build it
