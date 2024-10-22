@@ -1,0 +1,11 @@
+Theory:
+Static Application Security Testing (SAST) is an automated technique used to analyze the source code of an application without executing it. The primary goal of SAST is to identify security vulnerabilities early in the development cycle by reviewing how the code is written. Since SAST tools do not require the application to be running, they are particularly useful during the implementation phase of the Software Development Life Cycle (SDLC), allowing developers to catch potential issues before the code is deployed. This helps in maintaining the security and quality of the code by following standard safety procedures.
+
+Jenkins is an open-source automation server that facilitates continuous integration (CI) and continuous delivery (CD). It automates the build, test, and deployment phases of software, ensuring consistent and high-quality delivery. Jenkins can be integrated with various tools to improve the software development pipeline.
+
+SonarQube is a platform for continuous inspection of code quality, performing automatic reviews to detect bugs, vulnerabilities, and code smells. It integrates seamlessly with Jenkins, allowing real-time analysis of the codebase during the CI/CD pipeline. By using the SonarQube Scanner plugin in Jenkins, developers can perform static code analysis as part of the build process, ensuring the code meets quality and security standards before being deployed.
+
+In this experiment, we learned how to integrate Jenkins with SonarQube using Docker containers to perform automated static code analysis.
+
+Conclusion:
+Thus, we understood how to configure Jenkins and SonarQube, and integrate them to automate static code analysis using the SonarQube Scanner plugin. This integration allows continuous monitoring of code quality during the CI/CD pipeline, ensuring early detection and remediation of security vulnerabilities.
