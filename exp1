@@ -1,0 +1,40 @@
+1. Login with your AWS account.
+2. Navigate to Cloud 9 service from Developer tools section as below:
+3. Click on Create Environment 
+4. Provide name for the Enviornment (WebAppIDE) and click on next. 
+5. Keep all the Default seetings as shown in below:
+6. Review the Enviornment name and Settings and click on Create Enviornment:
+It will take few minutes to create aws instance for your Cloud 9 Enviornment.
+7. Till that time open IAM Identity and Access Management in order to Add user In other
+tab.
+8. Add user provide manual password if you want and click on Next permission tab.
+9. Click on Create group
+10. Provide group name and click on create group.
+11. After that group is created click on next if u want to provide tag else click on Review for
+user settings and click on create user as shown in fig.
+12. Now close that window and Navigate to user Groups from left pane in IAM.
+13. click on your group name which you have created and nevigate to permission tab as
+shown:
+14. Now click on Add permission and select Attach Policy after that search for Cloud9
+related policy and select Awscloud9EnviornmentMember policy and add it.
+15. now we move towards our cloud9 IDE Enviornment tab it shows as shown :
+16. If you check at bottom side Cloud9 IDE also giving you and aws CLI for command
+operations: as we here checked git version, iam user details and so on...
+17. Now we will setup collaborative enviornment Click on File you can create new file or
+choose from template, here m opting html file to collaborate. 
+18. Edit html file and save it
+19. now in order to share this file to collaborate with other members of your team click on
+Share option on Roght Pane and username which you created in IAM before into Invite
+members and enable persmission as RW (Read and Write) and click on Done. Click OK for
+Security warning.
+20. Now Open your Browsers Incognito Window and login with IAM user which you
+configured before.
+21. After Successful login with IAM user open Cloud9 service from dashboard services and
+click on shared with you enviornment to collaborate.
+22. Click on Open IDE you will same interface as your other member have to collaborate in
+real time, also you all within team can do group chats as shown below:
+24. you can also explore settings where you can update permissions of your temmates as from
+RW to R only or you can remove user too.
+For more info related to AWS-Cloud 9 you all can refer following Docs.
+https://docs.aws.amazon.com/cloud9/latest/user-guide/aws-cloud9-ug.pdf
+Conclusion: In thois experiment we have successfully created a new user on cloud9 .
