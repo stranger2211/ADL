@@ -1,0 +1,11 @@
+Theory for Viva
+AWS Cloud9 Overview: AWS Cloud9 is a powerful cloud-based integrated development environment (IDE) that simplifies the coding process by providing a seamless platform accessible from any web browser. It is equipped with essential tools for popular programming languages such as JavaScript, Python, and PHP. One of the standout features of Cloud9 is its serverless application development capabilities, allowing developers to efficiently create, test, and debug serverless functions directly within the IDE.
+
+Key Features and Benefits:
+
+Browser-Based Development: Cloud9 allows developers to write and run code without needing local installations, making it highly flexible and accessible from anywhere with an internet connection.
+Real-Time Collaboration: The IDE supports real-time collaboration, enabling multiple users to work on the same project simultaneously, enhancing teamwork and productivity.
+Integrated Tools: Cloud9 comes pre-configured with various SDKs, libraries, and plugins for over 40 programming languages, allowing quick project initiation.
+Direct AWS Access: Users have terminal access to AWS services, enabling straightforward command execution and resource management.
+Conclusion
+Through this experiment, I gained practical experience in setting up and using AWS Cloud9 for development purposes. The ability to collaborate in real-time with team members while developing applications demonstrated the IDE's significant benefits for modern development practices. By understanding Cloud9's features, I recognized how it streamlines the development process, particularly for serverless applications, and facilitates efficient team collaboration. This experience will aid in future projects that require cloud-based development environments, improving overall productivity and code quality.
