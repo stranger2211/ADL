@@ -1,0 +1,476 @@
+
+Exp1:-
+
+Login with your AWS account.
+Navigate to Cloud9 services.
+Click create environment.
+Enter name → Next.
+Environment type → Create new EC2 instance.
+Instance Type → t2.micro (1 GB RAM, 1 vCPU).
+Platform → Amazon Linux 2 (recommended).
+Cost-saving → After 30 minutes → Next.
+Create environment.
+Search IAM → Access Management → Users → Add user.
+Username:
+Select  I want to create an IAM user.
+Password → Next.
+Add user to group → Create group → Group name → Saved Cloud9.
+Select Amazon Cloud9EnvironmentMember → Create user group.
+Cloud9 IDE environment tab is opened → (Click on File → New File → Template → HTML File → Edit it → Save it).
+Click on Share button → Check read/write access.
+Write Invite Member name (That name which is set by user, IAM).
+Click on OK.
+Now open Browser Incognito Window & Login with IAM account.
+Account ID is mentioned in the profile at the right corner.
+Search Cloud9 → Open it → Dashboard → Shared with me.
+Click on Open.
+After this, explore how it works.
+Make sure your iam user is added in user group .. then only it will get access to work on cloudIDE
+
+Exp2:- 
+
+- Go to GitHub link → Copy the code link provided inside.
+  https://github.com/imoisharma/aws-codepipeline-s3-codedeploy-linux-2.0
+- Go to the AWS account.
+- Search for S3 Bucket.
+- Click on S3 Bucket.
+- Create Bucket
+  Bucket name <store-build-artifacts-your-name>
+  Keep default settings → Click on create.
+  Create 2nd Bucket
+- Bucket name as <deployment-bucket-application-your-name>
+  Uncheck Block Public and check Acknowledgment
+  Keep other setting as it is → Click on create.
+  Two buckets created successfully.
+- Search CodeBuild
+- Create CodeBuild Project:
+  Project name → PWA-CodeBuild-your-name
+  Source Category
+  Source Provider → GitHub
+  Repository → Repository in my GitHub account
+- Go to GitHub account
+  Click on your profle → Your repository → Create New
+  Add new repo name → Public → Add README → Code-repo
+  Open AWS account tab
+  select github repo you created now.
+  Operating System → Amazon Linux 2
+  Runtime - standard
+  Image - aws/codebuild/amazonlinux2-x86_64-standard:4.0
+- Image version: Always use the latest image for CodeInstance
+- Environment type → Linux
+- Select New Service Role
+- Role Name → codebuild-pwa-CodeBuild-Service-role
+- Use a buildspec file
+- Check NoArtifact, Check Cloudwatch
+- Create project
+- Search Pipeline Service
+- Create Pipeline
+- Pipeline name → pwa-pipeline-yourname
+- New Service Role
+- Role name → AWSCodePipelineServiceRole-us-east1-pwa-pipeline
+- Check the Allow AWS block
+- Select Custom location
+- Select your 1st bucket → Next
+- Add Source Stage → GitHub version1
+- Repository → Paste the link you copied firstly.
+- Branch → master → Next
+- Add Build stage
+- Build provider → AWS CodeBuild
+- Project name → Pwa-CodeBuild-yourname (Select it)
+- Single build → Next
+- Add deploy stage
+- Deploy provider → Amazon S3
+- Bucket → deployment-bucket-pwa (Select it)
+- Check Extract file before deploy → Next
+- Create Pipeline
+- Source will execute successfully
+- Build stage will throws error → solve it.
+- Click on View in CodeBuild
+- Environment variables → Service role link → Permissions
+- AmazonS3FullAccess search and select it.
+- Once all stages executed successfully. Follow next step.
+  Search S3 ➔ Buckets ➔ Select deployment-bucket-pwa ➔
+  Properties ➔ Static website hosting ➔ Edit ➔ Enable it ➔
+  Index document – index.html ➔ Save changes
+  Now Select Permission ➔ Bucket policy ➔ Edit
+  Open https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteAccessPermissionsRead.html
+  Copy the code and Paste it in Policy
+  Edit bucket name – deployment-bucket-pwa-your-name
+  Done
+
+
+Exp 5:- 
+
+Open https://www.terraform.io/downloads.html
+Select Linux and downlaod
+Open terminal 
+unzip terraform_1.0.3_linux_amd64.zip
+cd terraform_1.0.3_linux_amd64/
+sudo m terraform /usr/local/bin/
+terraform -v
+
+Exp6:-
+
+sudo apt-get install curl
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+sudo unzip awscliv2.zip
+sudo ./aws/install
+aws --verison
+login to AWS account
+click on profile --My security Credential
+create access key -->check the box-->create access key 
+copy the access key and download .csv file and done
+
+open terminal
+aws configure
+Open csv file .copy paste the access key Id , secret key and region name ap-south-1 and press enter
+cd ~
+mkdir project-terraform
+cd project-terraform
+sudo nano variables.tf
+open AWS 
+search EC2 --> network and security-->key pairs-->creat key pair --->name - terraform , key pair type -->RSA-->.pem-->create
+copy code and paste in variable.tf file 
+
+variable "aws_region" {
+  description = "The AWS region to create things in."
+  default     = "ap-south-1"
+}
+
+variable "key_name" {
+  description = "SSH keys to connect to ec2 instance"
+  default     = "terraform"
+}
+
+variable "instance_type" {
+  description = "instance type for ec2"
+  default     = "t2.micro"
+}
+
+save and exit
+remember the Ami Id
+sudo nano main.tf
+provider "aws" {
+
+  region = var.aws_region
+
+}
+
+
+#Create security group with firewall rules
+
+resource "aws_security_group" "security_jenkins_port" {
+
+  name        = "security_jenkins_port"
+
+  description = "security group for jenkins"
+
+
+  ingress {
+
+ from_port   = 8080
+
+    to_port     = 8080
+
+    protocol    = "tcp"
+
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+
+ ingress {
+
+    from_port   = 22
+
+    to_port     = 22
+
+    protocol    = "tcp"
+
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+# outbound from jenkis server
+
+  egress {
+
+    from_port   = 0
+
+    to_port     = 65535
+
+    protocol    = "tcp"
+
+    cidr_blocks = ["0.0.0.0/0"]
+
+  }
+
+
+  tags= {
+
+    Name = "security_jenkins_port"
+
+  }
+
+}
+
+
+resource "aws_instance" "myFirstInstance" {
+
+ ami           = "ami-0b9064170e32bde34"
+
+  key_name = var.key_name
+
+  instance_type = var.instance_type
+
+  security_groups= [ "security_jenkins_port"]
+
+  tags= {
+
+    Name = "jenkins_instance"
+
+  }
+
+}
+
+
+# Create Elastic IP address
+
+resource "aws_eip" "myFirstInstance" {
+
+  vpc      = true
+
+  instance = aws_instance.myFirstInstance.id
+
+tags= {
+
+    Name = "jenkins_elstic_ip"
+
+  }
+
+}
+
+terraform init
+terraform plan
+terraform apply
+go to EC2 instance you will see new instance is created
+terraform destroy (terminal)
+
+Exp7:-
+
+Installation of Jenkins
+cmd -> wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+       sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+       sudo apt update
+       sudo apt install jenkins
+       sudo systemctl start jenkins
+       sudo systemctl status jenkins
+
+Open thw Browser
+cmd -> sudo ufw allow 8080
+IP address: http://192.168.0.1:8080
+
+In the terminal window, use the cat command to display the password:
+cmd -> sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+Copy the 32-character alphanumeric password from the terminal and paste it into the Administrator password field, 
+then click Continue.
+
+The next screen presents the option of installing suggested plugins or selecting specific plugins:
+We’ll click the Install suggested plugins option, which will immediately begin the installation process:
+
+When the installation is complete, you will be prompted to set up the first administrative user. 
+It’s possible to skip this step and continue as admin using the initial password we used above, 
+but we’ll take a moment to create the user.
+
+Then Create User
+and then put the server URL in jenkins url -> http://192.168.0.1:8080
+After confirming the appropriate information, click Save and Finish. 
+You will see a confirmation page confirming that “Jenkins is Ready!
+Click Start using Jenkins to visit the main Jenkins dashboard:
+
+SonarQube Setup
+docker run -d -p 9000:9000 sonarqube
+Then from the browser, enter http://localhost:9000. After That, 
+you will see the SonarQube is running. Then, login using default credentials (admin:admin).
+
+go to Administration> User > My Account > Security and then, 
+from the bottom of the page you can create new tokens by clicking the Generate Button. Copy the token and keep it safe
+
+Jenkins Setup for SonarQube
+go to Manage Jenkins > Plugin Manager > Available. 
+From here, type SonarQube Scanner then select and install.
+
+Manage Jenkins > Configure System > SonarQube Server. Then, Add SonarQube. 
+
+go to Manage Jenkins > Global Tool Configuration > SonarQube Scanner. 
+Then, Click Add SonarQube Scanner Button. 
+From there, give some name of the scanner type and Add Installer of your choice
+
+SonarQube Scanner in Jenkins Pipeline
+we are going to add one more stage in the Jenkinsfile 
+called SonarQube and inside that, I am adding the following settings and code.
+
+Code ->
+node
+{
+    stage('clonning from GIT'){
+        git branch: 'main', credentialsId: 'GIT_REPO', url: 'https://github.com/vishal003/jenkins-sonarqube.git'
+    }
+}
+After this Save and Buildddddd.......
+
+Exp9:- 
+
+sudo apt-get update sudo apt-get install wget build-essential unzip openssl libssl-dev sudo apt-get install apache2 php libapache2-mod-php php-gd libgd-dev
+sudo adduser nagios 
+sudo groupadd nagcmd 
+sudo usermod -a -G nagcmd nagios    sudo usermod -a -G nagcmd www-data 
+
+cd /opt/
+sudo wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.3.tar.gz
+  sudo tar xzf nagios-4.4.3.tar.gz 
+
+manjusha@apsit:~$cd nagios-4.4.3
+
+manjusha@apsit:~$sudo ./configure --with-command-group=nagcmd
+
+manjusha@apsit:~$sudo make all
+
+manjusha@apsit:~$sudo make install
+
+manjusha@apsit:~$sudo make install-init
+
+manjusha@apsit:~$sudo make install-daemoninit
+
+manjusha@apsit:~$sudo make install-config
+
+manjusha@apsit:~$sudo make install-commandmode
+
+manjusha@apsit:~$sudo make install-exfoliation
+
+manjusha@apsit:~$sudo cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
+
+manjusha@apsit:~$sudo chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers
+
+manjusha@apsit:~$sudo nano /etc/apache2/conf-available/nagios.conf ScriptAlias /nagios/cgi-bin "/usr/local/nagios/sbin"
+<Directory "/usr/local/nagios/sbin">
+
+   Options ExecCGI
+
+   AllowOverride None
+
+   Order allow,deny
+
+   Allow from all
+
+   AuthName "Restricted Area"
+
+   AuthType Basic
+
+   AuthUserFile /usr/local/nagios/etc/htpasswd.users
+
+   Require valid-user
+
+</Directory>
+
+Alias /nagios "/usr/local/nagios/share"
+
+
+<Directory "/usr/local/nagios/share">
+
+   Options None
+
+   AllowOverride None
+
+   Order allow,deny
+
+   Allow from all
+
+   AuthName "Restricted Area"
+
+   AuthType Basic
+
+   AuthUserFile /usr/local/nagios/etc/htpasswd.users
+
+   Require valid-user
+
+</Directory>
+
+manjusha@apsit:~$sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+manjusha@apsit:~$sudo a2enconf nagios
+
+manjusha@apsit:~$sudo a2enmod cgi rewrite
+
+manjusha@apsit:~$sudo service apache2 restart
+
+manjusha@apsit:~$cd /opt
+
+manjusha@apsit:~$sudo wget http://www.nagios-plugins.org/download/nagios-plugins-2.2.1.tar.gz
+
+manjusha@apsit:~$sudo tar xzf nagios-plugins-2.2.1.tar.gznagios
+
+manjusha@apsit:~$cd nagios-plugins-2.2.1
+
+manjusha@apsit:~$sudo ./configure --with-nagios-user=nagios --with-nagios-group=nagios --with-openssl
+
+manjusha@apsit:~$sudo make
+
+manjusha@apsit:~$sudo make install
+
+manjusha@apsit:~$/usr/local/nagios/bin/nagios -v /usr/local/nagios/etc/nagios.cfg
+
+manjusha@apsit:~$ sudo service nagios start
+
+Access your nagios setup by access nagios server using hostname or ip address followed by /nagios.
+ http://127.0.0.1/nagios/ 
+username: nagiosadmin
+Password : 123456 (which you enter while configuration)
+
+Exp11:-
+
+login AWS
+search lambda
+region - mumbai
+create function 
+function name - D
+select - Python 3.10
+create function
+write code
+import json
+
+def lambda_handler(event,context):
+       first_number = 100
+       second_number = 200
+       sum = first_numebr + second_number
+       return sum
+
+test 
+event name - D25
+delete key-valule pair and click on save
+click deploy
+click test ..
+
+Exp12:-
+
+Search S3
+Create bucket --- bucket name ---create bucket 
+go to IAM --->Roles ---> create role option--->AWS service--->LAmbda---> next AmazonS3FullAccess / Amazon LambdaFullAccess / AMazon  CloudWatchFullAccess. enter role name and description and click on create role
+search lambda--->create function--->name of function ---->Execution role - use existing role --->name of existing role ---> create function 
+open lambda function and go to configuration--->add trigger---->S3--->Select bucket--->all objects create event--->suffix -.png---->select checkbox and add
+slect code 
+copy the code and paste 
+exports.handler = function(event, context, callback) {
+    console.log("Incoming Event: ", event);
+    const bucket = event.Records[0].s3.bucket.name;
+    const filename = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, ' '));
+    const message = An Image has been added - ${bucket} -> ${filename};
+    console.log(message);
+    callback(null, message);
+};
+test ---->name of test -->remove key-value text --->save...
+Go to S3---->click on bucket --->upload--->add files--->sleect .png file---> upload
+go to cloudwatch --->logs--->log groups--->your bucket name with image shoudl be displayed on it ..
+
+All EXPS.txt
+Displaying All EXPS.txt.
